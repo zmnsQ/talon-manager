@@ -1,12 +1,12 @@
 {
   "name": "talon",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Talon - Premium Electron Manager for OpenClaw",
   "main": "out/main/index.js",
   "author": "Antigravity",
   "scripts": {
     "dev": "electron-vite dev",
-    "build": "electron-vite build && electron-builder",
+    "build": "electron-vite build && electron-builder --mac",
     "build:win": "electron-vite build && electron-builder --win",
     "preview": "electron-vite preview",
     "typecheck": "tsc --noEmit"
@@ -53,7 +53,20 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "publish": {
+        "provider": "github",
+        "publishAutoUpdate": false
+      }
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "publish": {
+        "provider": "github",
+        "publishAutoUpdate": false
+      }
     },
     "nsis": {
       "oneClick": false,
