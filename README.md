@@ -75,6 +75,11 @@ npm run build
 
 欢迎提交 Issue 或 Pull Request！我们期待你的建议，让 Talon 变得更加锋利。
 
+## 🙏 鸣谢 (Acknowledgments)
+
+- [Electron](https://www.electronjs.org/) - 优秀的跨平台桌面应用开发框架。
+- [OpenClaw](https://github.com/imfing/openclaw) - 强大的私有 AI 助手网关核心。
+
 ## 📄 开源协议
 
 本项目采用 [MIT](LICENSE) 协议。
