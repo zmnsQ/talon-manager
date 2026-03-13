@@ -1,0 +1,15 @@
+node_modules
+.DS_Store
+dist
+out
+app-builds
+.env
+*.log
+.gemini
+.agents
+brain
+out-linux
+out-darwin
+out-win32
+src/renderer/dist
+src/main/dist

@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /Users/zmns/Desktop/git/OpenClawInstaller/manager_副本/src/renderer/src 2>/dev/null || true && find /Users/zmns/Desktop/git/OpenClawInstaller/manager_副本/src -type f -name \"*.ts\" -o -name \"*.tsx\" | head -50)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:npmjs.com)",
+      "Bash(mkdir -p /Users/zmns/Desktop/git/OpenClawInstaller/manager_副本/src/renderer/src/views && mkdir -p /Users/zmns/.claude/projects/-Users-zmns-Desktop-git-OpenClawInstaller-manager---/memory)",
+      "Bash(npm run:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:docs.openclaw.ai)",
+      "WebFetch(domain:clawd.org.cn)",
+      "Bash(find /Users/zmns/Desktop/git/OpenClawInstaller/manager_副本/src -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" -o -name \"*.md\" \\\\\\) 2>/dev/null | sort)",
+      "Bash(find /Users/zmns/Desktop/git/OpenClawInstaller/manager_副本 -maxdepth 2 -type f \\\\\\( -name \"*.md\" -o -name \"package.json\" \\\\\\) 2>/dev/null | grep -v node_modules | sort)"
+    ]
+  }
+}

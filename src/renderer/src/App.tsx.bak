@@ -1,0 +1,290 @@
+import React, { useState, useEffect } from 'react'
+import { 
+  MessageSquare, 
+  Settings, 
+  Zap, 
+  Github, 
+  Terminal,
+  Activity,
+  Cpu,
+  ShieldCheck,
+  Power,
+  Search,
+  RefreshCcw,
+  BrainCircuit
+} from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+
+import logoUrl from './assets/logo.png'
+
+interface OpenClawStatus {
+  installed: boolean
+  execPath: string | null
+  configPath: string | null
+}
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('dashboard')
+  const [isAgentRunning, setIsAgentRunning] = useState(true)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [detection, setDetection] = useState<OpenClawStatus | null>(null)
+
+  useEffect(() => {
+    // @ts-ignore
+    window.api.detectOpenClaw().then((data: OpenClawStatus) => {
+      setDetection(data)
+    })
+  }, [])
+
+  const navItems = [
+    { id: 'chat', label: '智能对话', icon: MessageSquare },
+    { id: 'skills', label: '技能扩展', icon: Zap },
+    { id: 'cron', label: '定时任务', icon: Activity },
+    { id: 'memory', label: '记忆管理', icon: Cpu },
+    { id: 'terminal', label: '实时日志', icon: Terminal },
+    { id: 'config', label: '配置管理', icon: ShieldCheck },
+    { id: 'settings', label: '全局设置', icon: Settings },
+  ]
+
+  const PageTransition = ({ children }: { children: React.ReactNode }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+    >
+      {children}
+    </motion.div>
+  )
+
+  return (
+    <div className="app-container">
+      {/* Sidebar */}
+      <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+        <div 
+          className="logo-container" 
+          style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: isSidebarCollapsed ? 'center' : 'flex-start', cursor: 'pointer' }}
+          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          title="点击折叠/展开"
+        >
+          <div style={{ width: '32px', height: '32px', background: 'var(--accent)', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <img src={logoUrl} alt="Talon Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          </div>
+          {!isSidebarCollapsed && <h2 className="tech-font" style={{ fontSize: '18px', fontWeight: 900, whiteSpace: 'nowrap' }}>Talon</h2>}
+        </div>
+
+        <nav>
+          {navItems.map((item) => (
+            <div
+              key={item.id}
+              className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(item.id)}
+              style={{ justifyContent: isSidebarCollapsed ? 'center' : 'flex-start' }}
+              title={isSidebarCollapsed ? item.label : undefined}
+            >
+              <item.icon size={20} style={{ flexShrink: 0 }} />
+              {!isSidebarCollapsed && <span style={{ whiteSpace: 'nowrap' }}>{item.label}</span>}
+            </div>
+          ))}
+        </nav>
+
+        <div style={{ marginTop: 'auto' }}>
+          <div 
+            className="nav-item" 
+            onClick={() => window.open('https://github.com/jiulingyun/openclaw-cn')}
+            style={{ justifyContent: isSidebarCollapsed ? 'center' : 'flex-start' }}
+            title={isSidebarCollapsed ? '开源仓库' : undefined}
+          >
+            <Github size={20} style={{ flexShrink: 0 }} />
+            {!isSidebarCollapsed && <span style={{ whiteSpac      {/* Content Area */}
+      <main className="content-area" style={{ paddingTop: '50px' }}>
+        <div className="top-drag-region">
+          {/* Top Right Status Indicator */}
+          <div style={{ position: 'absolute', right: '30px', top: '20px', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 20 }}>
+            {isAgentRunning ? (
+              <div className="status-badge status-online" style={{ WebkitAppRegion: 'no-drag' }}>
+                <Activity size={14} /> 核心运行中
+              </div>
+            ) : (
+              <div className="status-badge status-offline" style={{ WebkitAppRegion: 'no-drag' }}>
+                <Power size={14} /> 核心已停止
+              </div>
+            )}
+          </div>
+        </div>
+
+        <AnimatePresence mode="wait">�动 Agent'}
+          </button>
+        </div>
+        </header>
+
+        <AnimatePresence mode="wait">
+          {activeTab === 'chat' && (
+            <PageTransition key="chat">
+              <div style={{ display: 'flex', gap: '20px', height: 'calc(100vh - 180px)' }}>
+                {/* Chat History Column */}
+                <div style={{ width: '280px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', border: '1px solid var(--border)' }}>
+                  <button style={{ width: '100%', padding: '12px', background: 'var(--accent)', border: 'none', borderRadius: '10px', color: 'white', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '16px', cursor: 'pointer' }}>
+                    <Zap size={16} /> 新建会话
+                  </button>
+                  <div style={{ position: 'relative', marginBottom: '16px' }}>
+                    <Search size={14} style={{ position: 'absolute', left: '12px', top: '13px', color: 'var(--text-secondary)' }} />
+                    <input 
+                      placeholder="搜索会话..." 
+                      style={{ width: '100%', background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 10px 10px 35px', color: 'white', fontSize: '13px' }}
+                    />
+                  </div>
+                  <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    {[
+                      { t: '关于安装器的疑问', d: '今天 14:20' },
+                      { t: '如何配置微信接口', d: '昨天 10:15' },
+                      { t: '小龙虾新特性咨询', d: '3月8日' }
+                    ].map((h, i) => (
+                      <div key={i} style={{ padding: '12px', borderRadius: '8px', cursor: 'pointer', background: i === 0 ? 'rgba(255,255,255,0.05)' : 'transparent', border: i === 0 ? '1px solid var(--accent-glow)' : '1px solid transparent' }}>
+                        <p style={{ fontSize: '14px', fontWeight: 500, marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.t}</p>
+                        <p style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{h.d}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Chat Window Column */}
+                <div style={{ flex: 1, background: 'rgba(255,255,255,0.02)', borderRadius: '16px', display: 'flex', flexDirection: 'column', border: '1px solid var(--border)', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
+                    <div>
+                      <h4 style={{ fontSize: '16px' }}>关于安装器的疑问</h4>
+                      <p style={{ fontSize: '12px', color: '#22c55e' }}>● 正在连接本地网关...</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', borderRadius: '8px', padding: '8px 12px', color: 'white', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <RefreshCcw size={14} /> 刷新
+                      </button>
+                      <button style={{ background: 'rgba(255,87,87,0.1)', border: '1px solid var(--accent-glow)', borderRadius: '8px', padding: '8px 12px', color: 'var(--accent)', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <BrainCircuit size={14} /> 显示思考过程
+                      </button>
+                    </div>
+                  </div>
+                  <div style={{ flex: 1, padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'var(--text-secondary)' }}>
+                    <MessageSquare size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
+                    <p>会话窗口已准备就绪，开始交流吧</p>
+                  </div>
+                  <div style={{ padding: '20px', borderTop: '1px solid var(--border)' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', border: '1px solid var(--border)', padding: '12px', display: 'flex', gap: '12px' }}>
+                      <input placeholder="输入消息..." style={{ flex: 1, background: 'transparent', border: 'none', color: 'white', outline: 'none' }} />
+                      <button style={{ background: 'var(--accent)', color: 'white', border: 'none', borderRadius: '8px', padding: '8px 16px', fontWeight: 600 }}>发送</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </PageTransition>
+          )}
+
+          {activeTab === 'skills' && (
+            <PageTransition key="skills">
+               <h2 className="tech-font" style={{ marginBottom: '20px' }}>已安装技能</h2>
+               <div className="grid">
+                 {[
+                   { name: '天气专业版', desc: '实时高精度全球天气预报。', active: true },
+                   { name: '金融助手', desc: '监控股市与加密货币资产动态。', active: true },
+                   { name: '日历同步', desc: '跨平台同步日程与任务管理。', active: false },
+                   { name: '智能家居', desc: '本地连接并控制您的 IoT 设备。', active: true }
+                 ].map(skill => (
+                   <div key={skill.name} className="card">
+                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                       <h4 style={{ fontSize: '18px' }}>{skill.name}</h4>
+                       <div style={{ width: '30px', height: '16px', background: skill.active ? 'var(--accent)' : '#333', borderRadius: '10px', position: 'relative', cursor: 'pointer' }}>
+                         <div style={{ width: '12px', height: '12px', background: 'white', borderRadius: '50%', position: 'absolute', top: '2px', left: skill.active ? '16px' : '2px', transition: '0.2s' }} />
+                       </div>
+                     </div>
+                     <p style={{ color: 'var(--text-secondary)', marginTop: '10px', fontSize: '14px' }}>{skill.desc}</p>
+                   </div>
+                 ))}
+               </div>
+            </PageTransition>
+          )}
+
+          {activeTab === 'cron' && (
+            <PageTransition key="cron">
+              <h2 className="tech-font" style={{ marginBottom: '20px' }}>定时任务 (Cron Jobs)</h2>
+              <div className="card">
+                <p style={{ color: 'var(--text-secondary)' }}>您还未创建任何定时任务。在这里可以安排 Agent 自动执行特定指令。</p>
+              </div>
+            </PageTransition>
+          )}
+
+          {activeTab === 'memory' && (
+            <PageTransition key="memory">
+              <h2 className="tech-font" style={{ marginBottom: '20px' }}>长短期记忆管理</h2>
+              <div className="card">
+                <p style={{ color: 'var(--text-secondary)' }}>OpenClaw 的记忆持久化层。您可以查看、导出或重置 Agent 的知识库。</p>
+              </div>
+            </PageTransition>
+          )}
+
+          {activeTab === 'terminal' && (
+            <PageTransition key="terminal">
+              <h2 className="tech-font" style={{ marginBottom: '20px' }}>实时系统日志</h2>
+              <div style={{ background: '#000', borderRadius: '12px', padding: '20px', height: '400px', overflowY: 'auto', border: '1px solid var(--border)', fontFamily: 'monospace', fontSize: '13px' }}>
+                <p style={{ color: '#22c55e' }}>[SYSTEM] Initializing OpenClaw Manager v1.0.0...</p>
+                <p style={{ color: '#aaa' }}>[INFO] Detecting local environment...</p>
+                <p style={{ color: '#aaa' }}>[INFO] Found .openclaw directory at {detection?.configPath}</p>
+                <p style={{ color: '#22c55e' }}>[SUCCESS] Gateway connected successfully.</p>
+                <div style={{ marginTop: '10px', display: 'flex', gap: '4px' }}><span style={{ color: 'var(--accent)' }}>&gt;</span> <div style={{ width: '8px', height: '16px', background: 'white', animation: 'blink 1s infinite' }}></div></div>
+              </div>
+            </PageTransition>
+          )}
+
+          {activeTab === 'config' && (
+            <PageTransition key="config">
+              <h2 className="tech-font" style={{ marginBottom: '20px' }}>可视化配置管理</h2>
+              <div className="grid">
+                <div className="card">
+                  <h4 style={{ marginBottom: '16px' }}>基础设置 (Base)</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '14px' }}>网关端口</span>
+                      <input defaultValue="8080" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: '4px', padding: '4px 8px', width: '80px', color: 'white' }} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '14px' }}>启用调试模式</span>
+                      <input type="checkbox" defaultChecked />
+                    </div>
+                  </div>
+                </div>
+                <div className="card">
+                  <h4 style={{ marginBottom: '16px' }}>API 服务商</h4>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>您可以在此处通过 UI 直接修改 `.openclaw/config.json` 中的各家模型调用参数。</p>
+                </div>
+              </div>
+              <button style={{ marginTop: '20px', padding: '12px 24px', background: 'var(--accent)', color: 'white', border: 'none', borderRadius: '10px', fontWeight: 600 }}>保存并重启 Agent</button>
+            </PageTransition>
+          )}
+
+          {activeTab === 'settings' && (
+            <PageTransition key="settings">
+              <h2 className="tech-font" style={{ marginBottom: '20px' }}>全局设置</h2>
+              <div className="card" style={{ marginBottom: '20px' }}>
+                <h4 style={{ marginBottom: '16px' }}>本机环境状态</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
+                  <p>操作系统: <span style={{ color: 'var(--text-secondary)' }}>{window.navigator.platform}</span></p>
+                  <p>Node 版本: <span style={{ color: 'var(--text-secondary)' }}>内置环境</span></p>
+                  <p>OpenClaw 执行路径: <span style={{ color: 'var(--text-secondary)' }}>{detection?.execPath || '未检测到'}</span></p>
+                </div>
+              </div>
+              <div className="card">
+                <h4 style={{ marginBottom: '16px' }}>管理器更新</h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <p style={{ fontSize: '14px' }}>当前版本: v1.0.0</p>
+                    <p style={{ fontSize: '12px', color: '#22c55e' }}>您的管理器已是最新版本</p>
+                  </div>
+                  <button style={{ padding: '8px 16px', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '13px' }}>检查更新</button>
+                </div>
+              </div>
+            </PageTransition>
+          )}
+        </AnimatePresence>
+      </main>
+    </div>
+  )
+}
