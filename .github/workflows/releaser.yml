@@ -38,8 +38,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            pnpm run build:win
+            pnpm exec electron-vite build && pnpm exec electron-builder --win --publish always
           else
-            pnpm run build
+            pnpm exec electron-vite build && pnpm exec electron-builder --mac --publish always
           fi
         shell: bash
