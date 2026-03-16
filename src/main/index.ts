@@ -638,6 +638,13 @@ ipcMain.handle('run-install-step', async (event: any, step: string, packageName?
       log(`正在通过淘宝 pnpm 镜像安装 ${pkgName}...`, 'system')
       log('使用镜像: https://registry.npmmirror.com', 'info')
 
+      // Redirect git:// and git+ssh (git@github.com:) to HTTPS so that
+      // packages with git-protocol dependencies don't fail on machines
+      // without SSH keys or with restricted GitHub access.
+      log('配置 git 协议重定向（避免 SSH 权限问题）...', 'system')
+      await runCmd('git config --global url."https://".insteadOf "git://"')
+      await runCmd('git config --global url."https://github.com/".insteadOf "git@github.com:"')
+
       const pnpmBin = await resolvePnpm(
         process.env.PATH?.split(path.delimiter).find(d => {
           const p = path.join(d, process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm')
@@ -650,9 +657,14 @@ ipcMain.handle('run-install-step', async (event: any, step: string, packageName?
       if (!pnpmVersion.ok) { log('pnpm 不可用，请先完成 pnpm setup 步骤', 'error'); return { ok: false } }
 
       const code = await runPmCommand(event, pnpmBin,
-        ['add', '-g', `${pkgName}@latest`, '--registry=https://registry.npmmirror.com']
+        ['add', '-g', `${pkgName}@latest`, '--registry=https://registry.npmmirror.com', '--prefer-offline']
       )
-      if (code !== 0) { log(`${pkgName} 安装失败`, 'error'); return { ok: false } }
+      if (code !== 0) {
+        log(`${pkgName} 安装失败`, 'error')
+        log('如仍出现 git 权限错误，可尝试手动运行：', 'info')
+        log(`npm install -g ${pkgName}@latest --registry=https://registry.npmmirror.com`, 'info')
+        return { ok: false }
+      }
 
       // Refresh PATH with new pnpm bin dir
       const binRes = await runCmd(

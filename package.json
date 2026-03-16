@@ -1,6 +1,6 @@
 {
   "name": "talon",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Talon - Premium Electron Manager for OpenClaw",
   "main": "out/main/index.js",
   "author": "Antigravity",
